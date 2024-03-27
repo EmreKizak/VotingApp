@@ -1,10 +1,24 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {useQuery} from '@apollo/client';
-import {GET_QUESTIONS_QUERY} from './Queries';
+import React, {useEffect} from 'react';
+import {gql, useSubscription} from '@apollo/client';
+import {GET_QUESTIONS_SUBSCRIPTION} from './Queries';
+import client from '../../../Apollo';
 
 const Questions = () => {
-  const {Loading, error, data} = useQuery(GET_QUESTIONS_QUERY);
+  useEffect(() => {
+    client.query({
+      query: gql`
+        query {
+          question {
+            id
+            text
+          }
+        }
+      `,
+    });
+  }, []);
+
+  const {Loading, error, data} = useSubscription(GET_QUESTIONS_SUBSCRIPTION);
   if (Loading) {
     return <Text>Loading...</Text>;
   }
